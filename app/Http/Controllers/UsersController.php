@@ -13,10 +13,12 @@ class UsersController extends Controller
 {
     public function index()
     {
+        $user = \Auth::user();
         $users = User::paginate(10);
         
         return view('users.index', [
             'users' => $users,
+            'user' => $user
         ]);
     }
     
@@ -63,5 +65,20 @@ class UsersController extends Controller
         $data += $this->counts($user);
         
         return view('users.followers', $data);
+    }
+    
+    public function favorites($id)
+    {
+        $user = User::find($id);
+        $microposts = $user->favorites()->paginate(10);
+        
+        $data = [
+            'user' => $user,
+            'microposts' => $microposts,
+        ];
+        
+        $data += $this->counts($user);
+        
+        return view('users.favorites', $data);
     }
 }
